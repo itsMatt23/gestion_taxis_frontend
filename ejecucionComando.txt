@@ -1,0 +1,10 @@
+npm install -g @vue/cli
+cd gestion_taxis
+npm run serve
+
+//El axios es para consumir las apis de django
+npm install axios
+//Esto es para las rutas
+npm install vue-router
+//Esto para estilos de bootstrap
+npm install bootstrap bootstrap-vue
