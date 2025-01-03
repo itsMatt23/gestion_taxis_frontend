@@ -8,6 +8,7 @@
       </div>
   
       <ul class="nav flex-column mt-3">  
+        <!--Pantallas del Admin-->
         <div v-if="usuario && usuario.rol == 'Admin'">
         <li class="nav-item">
           <router-link to="/AdminRegistro" class="nav-link text-dark">
@@ -16,7 +17,37 @@
         </li>
   
         <li class="nav-item">
-          <router-link to="/perfil_admin" class="nav-link text-dark">
+          <router-link to="/AdminPerfil" class="nav-link text-dark">
+            <i class="fas fa-tachometer-alt"></i> Perfil
+          </router-link>
+        </li>
+      </div>
+
+      <!--Pantallas del Cliente-->
+      <div v-if="usuario && usuario.rol == 'Cliente'">
+        <li class="nav-item">
+          <router-link to="/ClienteRegistro" class="nav-link text-dark">
+            <i class="fas fa-tachometer-alt"></i> Registro
+          </router-link>
+        </li>
+  
+        <li class="nav-item">
+          <router-link to="/ClientePerfil" class="nav-link text-dark">
+            <i class="fas fa-tachometer-alt"></i> Perfil
+          </router-link>
+        </li>
+      </div>
+
+      <!--Pantallas del Conductor-->
+      <div v-if="usuario && usuario.rol == 'Conductor'">
+        <li class="nav-item">
+          <router-link to="/ConductorRegistro" class="nav-link text-dark">
+            <i class="fas fa-tachometer-alt"></i> Registro
+          </router-link>
+        </li>
+  
+        <li class="nav-item">
+          <router-link to="/ConductorPerfil" class="nav-link text-dark">
             <i class="fas fa-tachometer-alt"></i> Perfil
           </router-link>
         </li>

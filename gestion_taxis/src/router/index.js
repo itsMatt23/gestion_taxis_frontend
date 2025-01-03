@@ -1,12 +1,19 @@
 import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "../views/LoginView.vue";
-import AdminView from "../views/Admin/AdminView.vue";
-import AdminRegistro from "../views/Admin/AdminRegistro.vue";
+import RegisterView from "@/views/RegisterView.vue";
 
+//Vistas del admin
+import AdminView from "@/views/Admin/AdminView.vue";
+import AdminRegistro from "../views/Admin/AdminRegistro.vue";
+import PerfilView from "../views/PerfilView.vue";
+
+//Vistas del cliente
 import ClientsViews from "@/views/Clients/ClientsViews.vue";
 
+//Vistas del Conductor
 import DriversView from "@/views/Drivers/DriversView.vue";
-import RegisterView from "@/views/RegisterView.vue";
+import ClientsRegistro from "@/views/Clients/ClientsRegistro.vue";
+import DriversRegistro from "@/views/Drivers/DriversRegistro.vue";
 
 
 const routes = [
@@ -21,11 +28,12 @@ const routes = [
     component: RegisterView,
   },
 
+  //ADMIN
   {
     path: "/Admin",
     name: "Admin",
     component: AdminView,
-    meta: { requiresAuth: true, role: 'Admin' }, // Ruta protegida para Admin
+    meta: { requiresAuth: true, role: 'Admin' },
     redirect: "/AdminRegistro",
     children: [ 
       {
@@ -33,21 +41,58 @@ const routes = [
         name: "AdminRegistro",
         component: AdminRegistro,
         meta: { requiresAuth: true },
-      }   
+      },
+      {
+        path: "/AdminPerfil",
+        name: "AdminPerfil",
+        component: PerfilView,
+        meta: { requiresAuth: true },
+      }  
     ]  
-
   },
+
+  //CLIENTE
   {
     path: "/Cliente",
     name: "Cliente",
     component: ClientsViews,
     meta: { requiresAuth: true, role: 'Cliente' }, // Ruta protegida para Cliente
+    children:[
+      {
+        path: "/ClienteRegistro",
+        name: "ClienteRegistro",
+        component: ClientsRegistro,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/ClientePerfil",
+        name: "ClientePerfil",
+        component: PerfilView,
+        meta: { requiresAuth: true },
+      } 
+    ]
   },
+
+  //CONDUCTOR
   {
     path: "/Conductor",
     name: "Conductor",
     component: DriversView,
     meta: { requiresAuth: true, role: 'Conductor' }, // Ruta protegida para Conductor
+    children:[
+      {
+        path: "/ConductorRegistro",
+        name: "ConductorRegistro",
+        component: DriversRegistro,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/ConductorPerfil",
+        name: "ConductorPerfil",
+        component: PerfilView,
+        meta: { requiresAuth: true },
+      } 
+    ]
   },
 ];
 

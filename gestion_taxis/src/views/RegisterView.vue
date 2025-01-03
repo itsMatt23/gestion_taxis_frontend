@@ -19,7 +19,7 @@
             type="text"
             id="nombre"
             v-model="user.nombre"
-            placeholder="Ingrese el nombre del usuario"
+            placeholder="Ingrese el nombre de usuario"
             required
           />
         </div>
@@ -47,15 +47,10 @@
         </div>
   
         <div>
-          <label>Tipo de usuario:</label>
+          <label for="rol">Tipo de usuario:</label>
           <br />
           <label for="cliente">
-            <input
-              type="radio"
-              id="cliente"
-              v-model="user.rol"
-              value="cliente"
-            />
+            <input type="radio" id="cliente" v-model="user.rol" value="Cliente" />
             Cliente
           </label>
   
@@ -64,13 +59,13 @@
               type="radio"
               id="conductor"
               v-model="user.rol"
-              value="conductor"
+              value="Conductor"
             />
             Conductor
           </label>
         </div>
   
-        <div v-if="user.rol === 'conductor'">
+        <div v-if="user.rol === 'Conductor'">
           <div>
             <label for="marcaVehiculo">Marca del vehículo:</label>
             <input
@@ -120,74 +115,79 @@
   
         <div>
           <button type="submit">Crear Usuario</button>
-          <button type="button" @click="redirectToLogin">Cancelar</button>
+          <button type="button" @click="redirectToLogin()">Cancelar</button>
         </div>
       </form>
-      <p v-if="usuarioCreado">Usuario creado con éxito!</p>
+      <p v-if="usuarioCreado">¡Usuario creado con éxito!</p>
     </div>
   </template>
   
   <script>
-  import apiService from "../services/apiService";
-  
-  export default {
-    data() {
-      return {
-        user: {
-          email: "",
-          cedula: "",
-          nombre: "",
-          apellido: "",
-          telefono: "",
-          rol: "",
-          marca_vehiculo: "",
-          placa: "",
-          estado: "",
-          password: "",
-        },
-        usuarioCreado: false,
-      };
-    },
-    methods: {
-      redirectToLogin() {
-        this.$router.push("/"); // Cambia '/registro' por la ruta a la que quieras redirigir
+import apiService from "../services/apiService";
+
+export default {
+  data() {
+    return {
+      user: {
+        email: "",
+        cedula: "",
+        nombre: "",
+        apellido: "",
+        telefono: "",
+        rol: "",
+        marca_vehiculo: null,
+        placa: null,
+        estado: null,
+        password: "",
       },
-  
-      async crearUsuario() {
-        try {
-            if (this.user.rol === "Cliente") {
-    this.user.marca_vehiculo = null;
-    this.user.placa = null;
-    this.user.estado = "--------";
-} else if (this.user.rol === "Conductor") {
-    this.user.estado = "Libre";
-}
-          this.user.estado = this.user.rol === "conductor" ? "Libre" : null;
-          await apiService.createUser([this.user]); // Enviar como un array
-          this.usuarioCreado = true;
-          this.limpiarFormulario();
-          alert("Usuario creado con éxito");
-          this.redirectToLogin();
-        } catch (error) {
-          console.error("Error al crear usuario:", error);
+      usuarioCreado: false,
+    };
+  },
+  methods: {
+    redirectToLogin() {
+      this.$router.push("/"); // Cambia la ruta según tu configuración
+    },
+
+    async crearUsuario() {
+      try {
+        // Validar y ajustar los campos según el rol
+        if (this.user.rol === "Cliente") {
+          this.user.marca_vehiculo = null;
+          this.user.placa = null;
+          this.user.estado = null;
+        } else if (this.user.rol === "Conductor") {
+          this.user.estado = "Libre";
         }
-      },
-  
-      limpiarFormulario() {
-        this.user = {
-          email: "",
-          cedula: "",
-          nombre: "",
-          apellido: "",
-          telefono: "",
-          rol: "",
-          marca_vehiculo: "",
-          placa: "",
-          estado: "",
-          password: "",
-        };
-      },
+
+        // Enviar la solicitud de creación de usuario
+        await apiService.createUser(this.user);
+
+        // Mensaje de éxito y limpieza del formulario
+        this.usuarioCreado = true;
+        this.limpiarFormulario();
+        alert("Usuario registrado con éxito");
+        this.redirectToLogin();
+      } catch (error) {
+        console.error("Error al crear usuario:", error);
+        alert("Error al crear usuario. Por favor, verifica los datos.");
+      }
     },
-  };
-  </script>
-  
+
+    limpiarFormulario() {
+      this.user = {
+        email: "",
+        cedula: "",
+        nombre: "",
+        apellido: "",
+        telefono: "",
+        rol: "",
+        marca_vehiculo: null,
+        placa: null,
+        estado: null,
+        password: "",
+      };
+      this.usuarioCreado = false;
+    },
+  },
+};
+</script>
