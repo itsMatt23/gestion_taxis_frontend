@@ -50,6 +50,10 @@
         <p><strong>Tarifa:</strong> {{ viaje.tarifa }}</p>
         <p><strong>Estado:</strong> {{ viaje.estado }}</p>
       </div>
+
+<!-- Mostrar el mapa también en los detalles -->
+      <div id="map" style="height: 400px; width: 100%; margin-top: 20px;"></div>
+
       <div v-if="viaje && viaje.estado === 'completado'">
         <button @click="volverSolicitarViaje" class="btn btn-primary mt-3">Solicitar Nuevo Viaje</button>
       </div>
@@ -73,6 +77,8 @@ export default {
       autocompleteDestino: null,
       interval: null,
       viaje: null, // Estado del viaje
+       directionsService: null, // Servicio para calcular rutas
+      directionsRenderer: null, // Renderer para mostrar rutas
     };
   },
 
@@ -86,12 +92,8 @@ async created() {
           // Configura un temporizador para verificar el estado del viaje
           this.interval = setInterval(async () => {
             await this.cargarViaje(viajeId);
-            if (this.viaje.estado === "completado") {
-              clearInterval(this.interval); // Detén el temporizador
-            }
-          }, 2000); // Verificar cada 5 segundos
-        } else {
-          this.viaje = null; // No hay viaje en progreso
+          }, 5000); // Verificar cada 5 segundos
+          
         }
       }
     },
@@ -116,6 +118,15 @@ async created() {
           //alert("Viaje iniciado con éxito. ID del viaje: ",${response.data.id});
           localStorage.setItem("viaje_id", response.data.id);
           this.viaje = response.data; // Actualizar el viaje actual
+
+
+// Iniciar el temporizador
+        this.interval = setInterval(async () => {
+          await this.cargarViaje(response.data.id);
+        }, 5000);
+
+
+
         } catch (error) {
           console.error("Error al iniciar el viaje:", error);
           alert("Hubo un error al iniciar el viaje. Inténtalo nuevamente.");
@@ -125,19 +136,37 @@ async created() {
      async cargarViaje(viajeId) {
         try {
           const response = await api.getViaje(viajeId);
-          this.viaje = response.data;
+        if(response.data){
+        this.viaje = response.data;
 
-if (this.viaje && this.viaje.estado === "completado") {
-        clearInterval(this.interval); // Detén el temporizador
-        this.viaje = null; // Reinicia el estado del viaje
+        /*
+
+        // Dibujar la ruta en el mapa si el viaje está en progreso o completado
+if (this.viaje.origen && this.viaje.destino) {
+            this.origen = this.viaje.origen;
+            this.destino = this.viaje.destino;
+            this.dibujarRuta();
+          }
+*/
+
+
+        if(this.viaje.estado === "completado"){
+        clearInterval(this.interval);
         localStorage.removeItem("viaje_id");
-        this.initMap(); // Reinicializa el mapa
-      }
 
-
+         // Reiniciar formulario y mapa
+            this.viaje = null;
+            this.origen = "";
+            this.destino = "";
+            this.tarifa = 0;
+        this.initMap();
+        }      
+        }else{ this.viaje = null;
+        }
 
         } catch (error) {
           console.error("Error al cargar el viaje:", error);
+          this.viaje=null;
           clearInterval(this.interval);
         }
       },
@@ -148,7 +177,11 @@ if (this.viaje && this.viaje.estado === "completado") {
     this.origen = "";
     this.destino = "";
     this.tarifa = 0;
-    this.initMap(); // Reinicializa el mapa
+   
+    // Asegúrate de reiniciar correctamente el mapa
+    this.$nextTick(() => {
+      this.initMap(); // Reinicia el mapa después de que el DOM esté listo
+    });
   },
     initMap() {
       const mapElement = document.getElementById("map");
@@ -158,6 +191,8 @@ if (this.viaje && this.viaje.estado === "completado") {
       }
 
       const defaultLocation = { lat: 40.416775, lng: -3.703790 }; // Madrid
+
+if (!this.map) {
       this.map = new google.maps.Map(mapElement, {
         center: defaultLocation,
         zoom: 13,
@@ -175,18 +210,32 @@ if (this.viaje && this.viaje.estado === "completado") {
         title: "Ubicación de destino",
       });
 
-      this.autocompleteOrigen = new google.maps.places.Autocomplete(
-        this.$refs.origenInput,
-        { types: ["geocode"] }
-      );
+// Inicializar el servicio y el renderer para las rutas
+      this.directionsService = new google.maps.DirectionsService();
+      this.directionsRenderer = new google.maps.DirectionsRenderer();
+      this.directionsRenderer.setMap(this.map);
 
-      this.autocompleteDestino = new google.maps.places.Autocomplete(
-        this.$refs.destinoInput,
-        { types: ["geocode"] }
-      );
+    // Inicializar Autocomplete solo si los refs están disponibles
+    this.$nextTick(() => {
+      if (this.$refs.origenInput && this.$refs.destinoInput) {
+        this.autocompleteOrigen = new google.maps.places.Autocomplete(
+          this.$refs.origenInput,
+          { types: ["geocode"] }
+        );
+
+        this.autocompleteDestino = new google.maps.places.Autocomplete(
+          this.$refs.destinoInput,
+          { types: ["geocode"] }
+        );
+
+
+
 
       this.autocompleteOrigen.addListener("place_changed", this.onOrigenChanged);
       this.autocompleteDestino.addListener("place_changed", this.onDestinoChanged);
+      }
+      });
+      }
     },
     onOrigenChanged() {
       const place = this.autocompleteOrigen.getPlace();
@@ -195,6 +244,13 @@ if (this.viaje && this.viaje.estado === "completado") {
         this.markerOrigen.setPosition(place.geometry.location);
         this.map.setCenter(place.geometry.location);
         this.map.setZoom(15);
+
+// Intentar dibujar la ruta si ya hay destino
+        if (this.destino) {
+          this.dibujarRuta();
+        }
+
+
       } else {
         alert("Por favor, selecciona un lugar válido para la recogida.");
       }
@@ -206,10 +262,36 @@ if (this.viaje && this.viaje.estado === "completado") {
         this.markerDestino.setPosition(place.geometry.location);
         this.map.setCenter(place.geometry.location);
         this.map.setZoom(15);
+
+// Intentar dibujar la ruta si ya hay origen
+        if (this.origen) {
+          this.dibujarRuta();
+        }
+
         this.calcularTarifa();
       } else {
         alert("Por favor, selecciona un lugar válido para el destino.");
       }
+    },
+    dibujarRuta() {
+      if (!this.origen || !this.destino) {
+        alert("Por favor, asegúrate de que tanto origen como destino estén seleccionados.");
+        return;
+      }
+
+      const request = {
+        origin: this.markerOrigen.getPosition(),
+        destination: this.markerDestino.getPosition(),
+        travelMode: google.maps.TravelMode.DRIVING,
+      };
+
+      this.directionsService.route(request, (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          this.directionsRenderer.setDirections(result);
+        } else {
+          alert("No se pudo calcular la ruta. Por favor, inténtelo nuevamente.");
+        }
+      });
     },
     calcularTarifa() {
       const service = new google.maps.DistanceMatrixService();

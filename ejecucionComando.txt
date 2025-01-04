@@ -8,3 +8,8 @@ npm install axios
 npm install vue-router
 //Esto para estilos de bootstrap
 npm install bootstrap bootstrap-vue
+
+
+// mapbox
+npm install mapbox-gl
+npm install @mapbox/mapbox-gl-directions --save
