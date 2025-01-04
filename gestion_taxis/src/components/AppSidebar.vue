@@ -26,8 +26,14 @@
       <!--Pantallas del Cliente-->
       <div v-if="usuario && usuario.rol == 'Cliente'">
         <li class="nav-item">
-          <router-link to="/ClienteRegistro" class="nav-link text-dark">
-            <i class="fas fa-tachometer-alt"></i> Registro
+          <router-link to="/ClienteViaje" class="nav-link text-dark">
+            <i class="fas fa-tachometer-alt"></i> Viaje
+          </router-link>
+        </li>
+
+        <li class="nav-item">
+          <router-link to="/ClienteHistorial" class="nav-link text-dark">
+            <i class="fas fa-tachometer-alt"></i> Historial de Viajes
           </router-link>
         </li>
   
@@ -41,8 +47,14 @@
       <!--Pantallas del Conductor-->
       <div v-if="usuario && usuario.rol == 'Conductor'">
         <li class="nav-item">
-          <router-link to="/ConductorRegistro" class="nav-link text-dark">
-            <i class="fas fa-tachometer-alt"></i> Registro
+          <router-link to="/ConductorViaje" class="nav-link text-dark">
+            <i class="fas fa-tachometer-alt"></i> Viaje
+          </router-link>
+        </li>
+
+        <li class="nav-item">
+          <router-link to="/ConductorHistorial" class="nav-link text-dark">
+            <i class="fas fa-tachometer-alt"></i> Historial de Viajes
           </router-link>
         </li>
   

@@ -12,9 +12,17 @@ import ClientsViews from "@/views/Clients/ClientsViews.vue";
 
 //Vistas del Conductor
 import DriversView from "@/views/Drivers/DriversView.vue";
-import ClientsRegistro from "@/views/Clients/ClientsRegistro.vue";
-import DriversRegistro from "@/views/Drivers/DriversRegistro.vue";
+//import holaView from "@/views/Drivers/holaView.vue";
 
+import ClientsRegistro from "@/views/Clients/ClientsRegistro.vue";
+//import DriversRegistro from "@/views/Drivers/DriversRegistro.vue";
+
+// Vistas del viaje
+import ClienteViaje from "@/views/Clients/ClienteViaje.vue";
+import ConductorViaje from "@/views/Drivers/ConductorViaje.vue";
+
+import ClienteHistorial from "@/views/Clients/ClienteHistorial.vue";
+import ConductorHistorial from "@/views/Drivers/ConductorHistorial.vue";
 
 const routes = [
   {
@@ -57,6 +65,7 @@ const routes = [
     name: "Cliente",
     component: ClientsViews,
     meta: { requiresAuth: true, role: 'Cliente' }, // Ruta protegida para Cliente
+    redirect: "/ClienteViaje",
     children:[
       {
         path: "/ClienteRegistro",
@@ -69,8 +78,20 @@ const routes = [
         name: "ClientePerfil",
         component: PerfilView,
         meta: { requiresAuth: true },
-      } 
-    ]
+      },
+      {
+        path:"/ClienteViaje",
+        name:"ClienteViaje",
+        component:ClienteViaje,
+        meta:{requiresAuth:true},
+      },
+      {
+        path: "/ClienteHistorial",
+        name: "ClienteHistorial",
+        component: ClienteHistorial,
+        meta: { requiresAuth: true },
+      },
+    ],
   },
 
   //CONDUCTOR
@@ -79,19 +100,27 @@ const routes = [
     name: "Conductor",
     component: DriversView,
     meta: { requiresAuth: true, role: 'Conductor' }, // Ruta protegida para Conductor
+    redirect: "/ConductorViaje",
     children:[
-      {
-        path: "/ConductorRegistro",
-        name: "ConductorRegistro",
-        component: DriversRegistro,
-        meta: { requiresAuth: true },
-      },
       {
         path: "/ConductorPerfil",
         name: "ConductorPerfil",
         component: PerfilView,
         meta: { requiresAuth: true },
-      } 
+      } ,
+      {
+        path: "/ConductorViaje",
+        name: "ConductorViaje",
+        component: ConductorViaje,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/ConductorHistorial",
+        name: "ConductorHistorial",
+        component: ConductorHistorial,
+        meta: { requiresAuth: true },
+      },
+
     ]
   },
 ];

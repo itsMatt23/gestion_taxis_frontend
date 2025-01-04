@@ -110,6 +110,15 @@ export default {
         if (response.data) {
           this.usuario = response.data;
           localStorage.setItem('userConected', JSON.stringify(this.usuario));
+
+      // Guardar el ID basado en el rol
+      if (this.usuario.rol === "Cliente") {
+        localStorage.setItem('cliente_id', this.usuario.id);
+        console.log(localStorage.getItem('cliente_id')); // ID del cliente
+      } else if (this.usuario.rol === "Conductor") {
+        localStorage.setItem('conductor_id', this.usuario.id);
+        console.log(localStorage.getItem('conductor_id')); // ID del conductor
+      }
         } else {
           this.errorMessage = 'Usuario no encontrado';
         }
