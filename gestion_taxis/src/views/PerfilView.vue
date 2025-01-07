@@ -1,6 +1,6 @@
 <template>
     <div class="profile-container">
-        <h2 class="text-center mb-3">Mi Perfil</h2>
+        <h2 class="text-center mb-4">Mi Perfil</h2>
 
         <div class="profile-icon">
             <img :src="require('@/assets/perfil.jpg')" alt="Ícono de perfil" />
@@ -8,38 +8,33 @@
 
         <form @submit.prevent="actualizarUsuario" class="profile-form">
             <div class="form-group">
-                <label for="cedula">Cedula:</label>
-                <input type="text" id="text" v-model="perfil.cedula" placeholder="Ingrese la cedula del usaurio"
-                    required disabled />
+                <label for="cedula">Cédula:</label>
+                <input type="text" id="cedula" v-model="perfil.cedula" placeholder="Ingrese la cédula del usuario" required disabled />
             </div>
 
             <div class="form-group">
                 <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" v-model="perfil.nombre" placeholder="Ingrese el nombre del usuario"
-                    required />
+                <input type="text" id="nombre" v-model="perfil.nombre" placeholder="Ingrese el nombre del usuario" required />
             </div>
             
             <div class="form-group">
                 <label for="apellido">Apellido:</label>
-                <input type="text" id="apellido" v-model="perfil.apellido" placeholder="Ingrese el apellido del usuario"
-                    required />
+                <input type="text" id="apellido" v-model="perfil.apellido" placeholder="Ingrese el apellido del usuario" required />
             </div>
 
             <div class="form-group">
-                <label for="telefono">Telefono:</label>
-                <input type="text" id="text" v-model="perfil.telefono"
-                    placeholder="Ingrese el correo electrónico" required />
+                <label for="telefono">Teléfono:</label>
+                <input type="text" id="telefono" v-model="perfil.telefono" placeholder="Ingrese el teléfono del usuario" required />
             </div>
 
             <div class="form-group">
                 <label for="email">Correo Electrónico:</label>
-                <input disabled type="email" id="email" v-model="perfil.email"
-                    placeholder="Ingrese el correo electrónico" required />
+                <input disabled type="email" id="email" v-model="perfil.email" placeholder="Ingrese el correo electrónico" required />
             </div>
 
             <div class="form-group">
-                <label for="group" class="form-label">Rol:</label>
-                <select disabled id="group" class="form-select" v-model="perfil.rol" required>
+                <label for="group">Rol:</label>
+                <select disabled id="group" v-model="perfil.rol" required>
                     <option disabled value="">Seleccione el rol del usuario</option>
                     <option disabled value="Admin">Administrador</option>
                     <option disabled value="Cliente">Cliente</option>
@@ -49,30 +44,22 @@
 
             <div class="form-group">
                 <label for="password">Nueva Contraseña:</label>
-                <input type="password" id="password" v-model="perfil.password"
-                    placeholder="Ingrese la nueva contraseña (opcional)" />
+                <input type="password" id="password" v-model="perfil.password" placeholder="Ingrese la nueva contraseña (opcional)" />
             </div>
 
             <div v-if="perfil && perfil.rol == 'Conductor'">
                 <div class="form-group">
-                <label for="marca_vehiculo">Marca Vehiculo:</label>
-                <input type="text" id="marca_vehiculo" v-model="perfil.marca_vehiculo"
-                    placeholder="Ingrese el modelo del vehiculo" required />
+                    <label for="marca_vehiculo">Marca del Vehículo:</label>
+                    <input type="text" id="marca_vehiculo" v-model="perfil.marca_vehiculo" placeholder="Ingrese la marca del vehículo" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="placa">Placa del Vehículo:</label>
+                    <input type="text" id="placa" v-model="perfil.placa" placeholder="Ingrese la placa del vehículo" maxlength="6" required />
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="placa">Placa del vehiculo:</label>
-                <input type="text" id="placa" v-model="perfil.placa"
-                    placeholder="Ingrese la placa del vehiculo"
-                    maxlength="6"
-                    required/>
-            </div>
-        </div>
-
-
-
-            
-            <button type="submit" class="btn btn-dark w-100 mt-2">Actualizar</button>
+            <button type="submit" class="btn-update">Actualizar</button>
         </form>
     </div>
 </template>
@@ -85,8 +72,6 @@ export default {
         return {
             perfil: "",
         };
-    },
-    computed: {
     },
     methods: {
         async cargarPerfil() {
@@ -105,7 +90,6 @@ export default {
                 if (!usuarioActualizado.password) {
                     delete usuarioActualizado.password; // Elimina el campo si está vacío o nulo
                 }
-                //console.log(usuarioActualizado);
 
                 const response = await apiService.updateUser(usuarioActualizado.id, usuarioActualizado);
                 if (response.data) {
@@ -139,15 +123,17 @@ export default {
     max-width: 500px;
     margin: 0 auto;
     padding: 20px;
-    background: #f9f9f9;
+    background-color: #fff;
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 h2 {
     text-align: center;
     color: #333;
     margin-bottom: 20px;
+    font-size: 1.5rem;
 }
 
 .profile-icon {
@@ -169,41 +155,73 @@ h2 {
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 label {
     margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 1rem;
 }
 
 input,
 select {
     width: 100%;
-    padding: 8px;
+    padding: 12px;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-    background: #fff;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
 }
 
 input:disabled,
 select:disabled {
-    background: #f0f0f0;
+    background-color: #e0e0e0;
 }
 
 .btn-update {
     width: 100%;
-    padding: 10px;
-    background: #007bff;
+    padding: 12px;
+    background-color: #000;
     color: #fff;
     border: none;
-    border-radius: 5px;
-    font-size: 16px;
+    border-radius: 8px;
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: background-color 0.3s ease;
 }
 
 .btn-update:hover {
-    background: #0056b3;
+    background-color: #333;
+}
+
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 15px;
+        max-width: 90%;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+    }
+
+    .btn-update {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-container {
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: 1rem;
+    }
+
+    .btn-update {
+        font-size: 0.9rem;
+    }
 }
 </style>

@@ -307,11 +307,22 @@ export default {
 }
 
 .form-container {
-  width: 25%; /* Formulario pequeño */
-  padding: 15px;
+  width: 25%; /* Mantén el ancho del formulario pequeño */
   background-color: #f7f7f7;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centra el formulario verticalmente */
+  align-items: center;
+  height: 60%; /* Ajusta la altura del contenedor del formulario según sea necesario */
+  padding: 20px; /* Agrega un poco de padding para que no esté pegado a los bordes */
+}
+
+
+.formulario {
+  width: 90%; /* Ajusta el ancho del formulario */
+  height: auto; /* Permite que el formulario se ajuste a su contenido */
 }
 
 .map-container {
@@ -359,3 +370,4 @@ export default {
   width: 100%;
 }
 </style>
+
