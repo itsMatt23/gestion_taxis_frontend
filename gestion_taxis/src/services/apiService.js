@@ -42,7 +42,7 @@ const handleResponseError = (client, apiName) => {
       } else if (error.response && error.response.status === 401) {
         alert(`Error de autenticación en ${apiName}: Su sesión ha expirado. Por favor, vuelva a iniciar sesión.`);
         // Opcionalmente, redirige al usuario a la página de inicio de sesión
-        window.location.href = '/login';
+        window.location.href = '/';
       } else {
         console.error(`Error en ${apiName}:`, error.message);
       }
