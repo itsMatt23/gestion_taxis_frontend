@@ -52,6 +52,34 @@
                 <input type="password" id="password" v-model="perfil.password"
                     placeholder="Ingrese la nueva contraseña (opcional)" />
             </div>
+            <small v-if="perfil.password" class="form-text text-muted">
+                    La contraseña debe tener:
+                    <ul>
+                        <li
+                            v-bind:class="{ 'text-success': passwordValidations.length, 'text-danger': !passwordValidations.length }">
+                            Entre 4 y 10 caracteres.</li>
+
+
+                        <li v-bind:class="{
+                            'text-success': passwordValidations.number,
+                            'text-danger': !passwordValidations.number,
+                        }">
+                            Un número.
+                        </li>
+                        <li v-bind:class="{
+                            'text-success': passwordValidations.uppercase,
+                            'text-danger': !passwordValidations.uppercase,
+                        }">
+                            Una letra mayúscula.
+                        </li>
+                        <li v-bind:class="{
+                            'text-success': passwordValidations.special,
+                            'text-danger': !passwordValidations.special,
+                        }">
+                            Un carácter especial.
+                        </li>
+                    </ul>
+                </small>
 
             <div v-if="perfil && perfil.rol == 'Conductor'">
                 <div class="form-group">
@@ -86,8 +114,18 @@ export default {
             perfil: "",
         };
     },
-    computed: {
-    },
+    computed:{
+    passwordValidations() {
+            return {
+                length:
+                    this.perfil.password.length >= 4 && this.perfil.password.length <= 10, // Validación de longitud
+                number: /\d/.test(this.perfil.password),
+                uppercase: /[A-Z]/.test(this.perfil.password),
+                special: /[!@#$%^&*(),.?":{}|<>]/.test(this.perfil.password),
+            };
+        },
+  },
+
     methods: {
         async cargarPerfil() {
             const storedUser = localStorage.getItem('userConected');
@@ -105,7 +143,11 @@ export default {
                 if (!usuarioActualizado.password) {
                     delete usuarioActualizado.password; // Elimina el campo si está vacío o nulo
                 }
-                //console.log(usuarioActualizado);
+
+                if (!this.passwordValidations.length || !this.passwordValidations.number || !this.passwordValidations.uppercase || !this.passwordValidations.special) {
+                    alert("La contraseña no cumple con los requisitos.");
+                    return;
+                }
 
                 const response = await apiService.updateUser(usuarioActualizado.id, usuarioActualizado);
                 if (response.data) {
