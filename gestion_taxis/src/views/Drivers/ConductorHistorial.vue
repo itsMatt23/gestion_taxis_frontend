@@ -9,6 +9,7 @@
         <p><strong>Origen:</strong> {{ viaje.origen }}</p>
         <p><strong>Destino:</strong> {{ viaje.destino }}</p>
         <p><strong>Tarifa:</strong> ${{ viaje.tarifa }}</p>
+
       </li>
     </ul>
     <p v-else>No hay viajes en progreso.</p>
@@ -20,6 +21,10 @@
         <p><strong>Origen:</strong> {{ viaje.origen }}</p>
         <p><strong>Destino:</strong> {{ viaje.destino }}</p>
         <p><strong>Tarifa:</strong> ${{ viaje.tarifa }}</p>
+        <p><strong>Cliente:</strong> {{ viaje.cliente.nombre }} {{ viaje.cliente.apellido }}</p>
+        <p><strong>Conductor:</strong> {{ viaje.conductor.nombre }} {{ viaje.conductor.apellido }}</p>
+        <p><strong>Auto:</strong> {{ viaje.conductor.marca_vehiculo }}</p>
+        <p><strong>Placa:</strong> {{ viaje.conductor.placa }}</p>
       </li>
     </ul>
     <p v-else>No hay viajes completados.</p>
