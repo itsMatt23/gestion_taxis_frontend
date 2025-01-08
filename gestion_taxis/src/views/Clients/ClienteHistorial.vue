@@ -168,6 +168,12 @@ p {
   text-align: left; /* Cambié para que no esté centrado */
 }
 
+/* Quitar los puntos de la lista */
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
 /* Estilos responsivos */
 @media (max-width: 768px) {
   .historial-viajes {

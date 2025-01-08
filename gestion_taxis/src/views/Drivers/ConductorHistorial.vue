@@ -127,6 +127,7 @@ body {
   border-radius: 10px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s;
+  list-style-type: none; /* Elimina los puntitos */
 }
 
 .viaje-item:hover {
