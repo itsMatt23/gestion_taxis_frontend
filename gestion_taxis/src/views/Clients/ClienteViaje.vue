@@ -321,13 +321,13 @@ export default {
 
 
 .formulario {
-  width: 90%; /* Ajusta el ancho del formulario */
-  height: auto; /* Permite que el formulario se ajuste a su contenido */
+  width: 90%; 
+  height: auto; 
 }
 
 .map-container {
-  width: 72%; /* Mapa grande */
-  height: 100%; /* El mapa ocupa toda la altura disponible */
+  width: 72%; 
+  height: 100%; 
 }
 
 .title {
@@ -370,4 +370,3 @@ export default {
   width: 100%;
 }
 </style>
-
