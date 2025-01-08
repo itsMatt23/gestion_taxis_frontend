@@ -96,6 +96,11 @@ export default {
     });
   },
 
+  getConductoresDisponibles() {
+    return apiClient.get('/conductores_disponibles/');
+  },
+  
+
   /////CRUD Usuarios
   //Usuaios
   getUsers() {

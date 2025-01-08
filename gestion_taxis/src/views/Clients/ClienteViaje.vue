@@ -49,6 +49,15 @@
         <p><strong>Destino:</strong> {{ viaje.destino }}</p>
         <p><strong>Tarifa:</strong> {{ viaje.tarifa }}</p>
         <p><strong>Estado:</strong> {{ viaje.estado }}</p>
+        <!-- Mostrar los datos del conductor -->
+        <div v-if="viaje.conductor">
+          <h3>Datos del Conductor</h3>
+          <p><strong>Nombre:</strong> {{ viaje.conductor.nombre }}</p>
+          <p><strong>Apellido:</strong> {{ viaje.conductor.apellido }}</p>
+          <p><strong>Cédula:</strong> {{ viaje.conductor.cedula }}</p>
+          <p><strong>Email:</strong> {{ viaje.conductor.email }}</p>
+          <p><strong>Teléfono:</strong> {{ viaje.conductor.telefono }}</p>
+        </div>
       </div>
 
 <!-- Mostrar el mapa también en los detalles -->
@@ -111,8 +120,12 @@ async created() {
             origen: this.origen,
             destino: this.destino,
             tarifa: this.tarifa,
-            cliente: clienteId,
+            cliente_id: clienteId,
           };
+          
+console.log("Datos del viaje:", viajeData);
+
+
           const response = await api.createViaje(viajeData);
          alert(`Viaje iniciado con éxito. ID del viaje: ",${response.data.id}`);
           //alert("Viaje iniciado con éxito. ID del viaje: ",${response.data.id});
@@ -190,7 +203,7 @@ if (this.viaje.origen && this.viaje.destino) {
         return;
       }
 
-      const defaultLocation = { lat: 40.416775, lng: -3.703790 }; // Madrid
+      const defaultLocation = { lat: -1.269500, lng: -78.626205 }; // Madrid
 
 if (!this.map) {
       this.map = new google.maps.Map(mapElement, {
@@ -307,7 +320,7 @@ if (!this.map) {
             const distanceInKm = distanceInMeters / 1000;
 
             // Fórmula de tarifa personalizada
-            this.tarifa = (distanceInKm * 2).toFixed(2);
+            this.tarifa = (distanceInKm * 0.7).toFixed(2);
           } else {
             alert("No se pudo calcular la tarifa. Por favor, inténtelo nuevamente.");
           }
