@@ -319,7 +319,6 @@ export default {
   padding: 20px; /* Agrega un poco de padding para que no esté pegado a los bordes */
 }
 
-
 .formulario {
   width: 90%; 
   height: auto; 
@@ -350,23 +349,21 @@ export default {
   margin-top: 5px;
 }
 
+label {
+  color: #000; /* Cambiar color de los labels a negro */
+  font-weight: bold;
+}
+
 .btn-submit {
-  width: 100%;
-  background-color: #1c1c1c;
+  background-color:  #000;
   color: white;
-  padding: 12px;
   border: none;
+  padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
 }
 
 .btn-submit:hover {
-  background-color: #333;
-}
-
-#map {
-  height: 100%; /* El mapa ocupa todo el espacio vertical */
-  width: 100%;
+  background-color: #000;
 }
 </style>

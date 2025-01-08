@@ -115,6 +115,7 @@ export default {
   border-right: 1px solid #eaeaea;
   background-color: #f9f9f9;
   font-family: 'Roboto', sans-serif;
+  transition: transform 0.3s ease;
 }
 
 .sidebar-header {
@@ -186,9 +187,15 @@ export default {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .sidebar {
-    width: 200px;
+    transform: translateX(-100%);
+    position: absolute;
+    z-index: 1000;
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
   }
 }
 </style>
