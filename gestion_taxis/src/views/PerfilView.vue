@@ -28,7 +28,7 @@
             <div class="form-group">
                 <label for="telefono">Telefono:</label>
                 <input type="text" id="text" v-model="perfil.telefono"
-                    placeholder="Ingrese el correo electrónico" required />
+                    placeholder="Ingrese el correo electrónico" required disabled />
             </div>
 
             <div class="form-group">
@@ -58,8 +58,6 @@
                         <li
                             v-bind:class="{ 'text-success': passwordValidations.length, 'text-danger': !passwordValidations.length }">
                             Entre 4 y 10 caracteres.</li>
-
-
                         <li v-bind:class="{
                             'text-success': passwordValidations.number,
                             'text-danger': !passwordValidations.number,
