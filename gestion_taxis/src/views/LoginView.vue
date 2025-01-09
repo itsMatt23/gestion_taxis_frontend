@@ -122,10 +122,13 @@ export default {
           await this.traerUsuario(this.email);
           if (this.usuario.rol === "Admin") {
             this.$router.push({ name: "Admin" });
+            alert("Acceso Correcto");
           } else if (this.usuario.rol === "Cliente") {
             this.$router.push({ name: "Cliente" });
+            alert("Acceso Correcto");
           } else {
             this.$router.push({ name: "Conductor" });
+            alert("Acceso Correcto");
           }
         } else {
           alert("Error: No se pudo obtener el token de acceso.");

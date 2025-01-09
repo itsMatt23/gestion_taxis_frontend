@@ -13,7 +13,6 @@
       <ul class="nav flex-column">
         <!-- Pantallas del Admin -->
         <div v-if="usuario && usuario.rol == 'Admin'" class="mb-4">
-          <h6 class="nav-section-title">Administración</h6>
           <li class="nav-item">
             <router-link to="/AdminRegistro" class="nav-link">
               <i class="fas fa-user-plus"></i> Registro
@@ -28,7 +27,6 @@
 
         <!-- Pantallas del Cliente -->
         <div v-if="usuario && usuario.rol == 'Cliente'" class="mb-4">
-          <h6 class="nav-section-title">Cliente</h6>
           <li class="nav-item">
             <router-link to="/ClienteViaje" class="nav-link">
               <i class="fas fa-car"></i> Viaje
@@ -48,7 +46,6 @@
 
         <!-- Pantallas del Conductor -->
         <div v-if="usuario && usuario.rol == 'Conductor'" class="mb-4">
-          <h6 class="nav-section-title">Conductor</h6>
           <li class="nav-item">
             <router-link to="/ConductorViaje" class="nav-link">
               <i class="fas fa-road"></i> Viaje

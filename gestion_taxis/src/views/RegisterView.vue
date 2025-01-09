@@ -90,7 +90,7 @@
                   placeholder="Ingrese la contraseña del usuario" required maxlength="10" />
               </div>
 
-              <small v-if="user.password" class="form-text text-muted text-light">
+              <small v-if="user.password" class="form-text text-muted text-light text-white-custom">
                 La contraseña debe tener:
                 <ul class="text-light">
                   <li :class="{ 'text-success': passwordValidations.length, 'text-danger': !passwordValidations.length }">
@@ -112,9 +112,9 @@
 
               <div class="d-grid gap-2 mt-3">
                 <button type="submit" class="btn btn-light btn-lg fw-bold"
-                  style="background-color: #fff; color: #000;">Crear Usuario</button>
+                  style="background-color: #fff; color: #000;">Registrarse</button>
                 <button type="button" @click="redirectToLogin"
-                  class="btn btn-outline-light btn-lg fw-bold">Cancelar</button>
+                  class="btn btn-outline-light btn-lg fw-bold">Iniciar Sesion</button>
               </div>
             </form>
             <p v-if="usuarioCreado" class="text-light text-center mt-3">¡Usuario creado con éxito!</p>
@@ -278,5 +278,8 @@ export default {
 };
 </script>
 <style scoped>
+.text-white-custom {
+  color: white !important;
+}
 /* Los estilos ya están definidos en el diseño original, pero aquí puedes agregar estilos específicos si es necesario */
 </style>
