@@ -1,7 +1,11 @@
 <template>
+  <div>
+  <NavBar />
+</div>
+
   <section
     class="d-flex align-items-center"
-    style="width: 100%; min-height: 100vh; background-color: #F9F9F9;"
+    style="width: 100%; min-height: 100vh; background-color: #F9F9F9; padding-top: 70px;"
   >
     <div class="container">
       <div class="row align-items-center justify-content-center">
@@ -89,7 +93,12 @@
 
 <script>
 import apiService from "../services/apiService";
+import NavBar from '../components/NavBar.vue';
+
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
       email: "",

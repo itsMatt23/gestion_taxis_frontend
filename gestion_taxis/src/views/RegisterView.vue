@@ -1,304 +1,178 @@
 <template>
-  <h2 class="title">Gestión de Usuarios</h2>
-  <div class="form-container">
-    <form @submit.prevent="crearUsuario">
-      <div class="input-group">
-        <label for="cedula">Cédula:</label>
-        <input
-          type="text"
-          id="cedula"
-          v-model="user.cedula"
-          placeholder="Ingrese la cédula del usuario"
-          required
-        />
-      </div>
-
-      <div class="input-group">
-        <label for="nombre">Nombre:</label>
-        <input
-          type="text"
-          id="nombre"
-          v-model="user.nombre"
-          placeholder="Ingrese el nombre de usuario"
-          required
-        />
-      </div>
-
-      <div class="input-group">
-        <label for="apellido">Apellido:</label>
-        <input
-          type="text"
-          id="apellido"
-          v-model="user.apellido"
-          placeholder="Ingrese el apellido del usuario"
-          required
-        />
-      </div>
-
-      <div class="input-group">
-        <label for="telefono">Teléfono:</label>
-        <input
-          type="text"
-          id="telefono"
-          v-model="user.telefono"
-          placeholder="Ingrese el teléfono del usuario"
-          required
-        />
-      </div>
-
-      <div class="role-section">
-        <label for="rol">Tipo de usuario:</label>
-        <br />
-        <label for="cliente">
-          <input type="radio" id="cliente" v-model="user.rol" value="Cliente" />
-          Cliente
-        </label>
-
-        <label for="conductor">
-          <input
-            type="radio"
-            id="conductor"
-            v-model="user.rol"
-            value="Conductor"
-          />
-          Conductor
-        </label>
-      </div>
-
-      <div v-if="user.rol === 'Conductor'" class="input-group">
-        <div>
-          <label for="marcaVehiculo">Marca del vehículo:</label>
-          <input
-            type="text"
-            id="marcaVehiculo"
-            v-model="user.marca_vehiculo"
-            placeholder="Ingrese la marca del vehículo"
-            required
-          />
-        </div>
-
-        <div>
-          <label for="placa">Placa del vehículo:</label>
-          <input
-            type="text"
-            id="placa"
-            v-model="user.placa"
-            placeholder="Ingrese la placa del vehículo"
-            maxlength="6"
-            required
-          />
-        </div>
-      </div>
-
-      <div class="input-group">
-        <label for="email">Correo:</label>
-        <input
-          type="email"
-          id="email"
-          v-model="user.email"
-          placeholder="Ingrese el correo del usuario"
-          required
-        />
-      </div>
-
-      <div class="input-group">
-        <label for="password">Contraseña:</label>
-        <input
-          type="password"
-          id="password"
-          v-model="user.password"
-          placeholder="Ingrese la contraseña del usuario"
-          required
-          maxlength="10"
-        />
-      </div>
-
-      <div class="button-group">
-        <button type="submit" class="primary-button">Crear Usuario</button>
-        <button type="button" @click="redirectToLogin()" class="secondary-button">Cancelar</button>
-      </div>
-    </form>
-    <p v-if="usuarioCreado" class="success-message">¡Usuario creado con éxito!</p>
+  <div>
+    <NavBar />
   </div>
+
+  <section
+    class="d-flex align-items-center"
+    style="width: 100%; min-height: 100vh; background-color: #F9F9F9; padding-top: 70px;"
+  >
+    <div class="container">
+      <div class="row align-items-center justify-content-center">
+        <!-- Texto a la izquierda -->
+        <div
+          class="col-12 col-md-6 mb-4 mb-md-0 text-center text-md-start"
+          style="padding: 20px;"
+        >
+          <h1 class="display-4 fw-bold text-dark">
+            Regístrate para empezar a usar nuestra plataforma
+          </h1>
+          <p class="fs-5 text-muted">
+            Únete a nosotros y comienza a disfrutar de viajes personalizados y más.
+          </p>
+        </div>
+        <!-- Formulario a la derecha -->
+        <div class="col-12 col-md-6">
+          <div
+            class="card p-4 shadow-sm"
+            style="background-color: #000; border: none; border-radius: 10px;"
+          >
+            <h3 class="text-light text-center fw-bold mb-4">Registro</h3>
+            <form @submit.prevent="register">
+              <div class="mb-3">
+                <label for="email" class="form-label text-light">Correo Electrónico</label>
+                <input
+                  type="email"
+                  class="form-control form-control-lg"
+                  v-model="email"
+                  id="email"
+                  placeholder="name@example.com"
+                  style="background-color: #fff; color: #000; border: none;"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label text-light">Contraseña</label>
+                <input
+                  type="password"
+                  class="form-control form-control-lg"
+                  v-model="password"
+                  id="password"
+                  placeholder="Password"
+                  style="background-color: #fff; color: #000; border: none;"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="confirmPassword" class="form-label text-light">Confirmar Contraseña</label>
+                <input
+                  type="password"
+                  class="form-control form-control-lg"
+                  v-model="confirmPassword"
+                  id="confirmPassword"
+                  placeholder="Confirm Password"
+                  style="background-color: #fff; color: #000; border: none;"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="nombre" class="form-label text-light">Nombre</label>
+                <input
+                  type="text"
+                  class="form-control form-control-lg"
+                  v-model="nombre"
+                  id="nombre"
+                  placeholder="Tu nombre"
+                  style="background-color: #fff; color: #000; border: none;"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="apellido" class="form-label text-light">Apellido</label>
+                <input
+                  type="text"
+                  class="form-control form-control-lg"
+                  v-model="apellido"
+                  id="apellido"
+                  placeholder="Tu apellido"
+                  style="background-color: #fff; color: #000; border: none;"
+                  required
+                />
+              </div>
+              <div class="mb-3" v-if="errorMessage">
+                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                  <span>{{ errorMessage }}</span>
+                  <button
+                    type="button"
+                    class="btn-close ms-auto"
+                    @click="errorMessage = ''"
+                    aria-label="Close"
+                  ></button>
+                </div>
+              </div>
+              <div class="d-grid gap-2">
+                <button
+                  class="btn btn-light btn-lg fw-bold"
+                  type="submit"
+                  style="background-color: #fff; color: #000;"
+                >
+                  Registrarse
+                </button>
+                <button
+                  class="btn btn-outline-light btn-lg fw-bold"
+                  type="button"
+                  @click="redirectToLogin"
+                >
+                  Iniciar sesión
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script>
 import apiService from "../services/apiService";
+import NavBar from '../components/NavBar.vue';
 
 export default {
+  components: {
+    NavBar,
+  },
   data() {
     return {
-      user: {
-        email: "",
-        cedula: "",
-        nombre: "",
-        apellido: "",
-        telefono: "",
-        rol: "",
-        marca_vehiculo: null,
-        placa: null,
-        estado: null,
-        password: "",
-      },
-      usuarioCreado: false,
+      email: "",
+      password: "",
+      confirmPassword: "",
+      nombre: "",
+      apellido: "",
+      errorMessage: "",
     };
   },
   methods: {
     redirectToLogin() {
-      this.$router.push("/"); // Cambia la ruta según tu configuración
+      this.$router.push("/");
     },
-
-    async crearUsuario() {
+    // Aquí asumimos que existe un método register en apiService
+    async register() {
       try {
-        // Validar y ajustar los campos según el rol
-        if (this.user.rol === "Cliente") {
-          this.user.marca_vehiculo = null;
-          this.user.placa = null;
-          this.user.estado = null;
-        } else if (this.user.rol === "Conductor") {
-          this.user.estado = "Libre";
+        if (this.password !== this.confirmPassword) {
+          this.errorMessage = "Las contraseñas no coinciden.";
+          return;
         }
+        const response = await apiService.register(this.email, this.password, this.nombre, this.apellido);
 
-        // Enviar la solicitud de creación de usuario
-        await apiService.createUser(this.user);
-
-        // Mensaje de éxito y limpieza del formulario
-        this.usuarioCreado = true;
-        this.limpiarFormulario();
-        alert("Usuario registrado con éxito");
-        this.redirectToLogin();
+        if (response && response.data && response.data.access) {
+          const { access } = response.data;
+          localStorage.setItem("access_token", access);
+          // Aquí deberías redirigir al usuario a una página de confirmación o inicio de sesión
+          this.$router.push("/login");
+        } else {
+          alert("Error: No se pudo registrar el usuario.");
+        }
       } catch (error) {
-        console.error("Error al crear usuario:", error);
-        alert("Error al crear usuario. Por favor, verifica los datos.");
+        if (error.response && error.response.data) {
+          this.errorMessage =
+            error.response.data.detail || "Error al registrarse.";
+        } else {
+          this.errorMessage = "Error de conexión con el servidor.";
+        }
+        console.error(error);
       }
-    },
-
-    limpiarFormulario() {
-      this.user = {
-        email: "",
-        cedula: "",
-        nombre: "",
-        apellido: "",
-        telefono: "",
-        rol: "",
-        marca_vehiculo: null,
-        placa: null,
-        estado: null,
-        password: "",
-      };
-      this.usuarioCreado = false;
     },
   },
 };
 </script>
-
-<style scoped>
-.form-container {
-  max-width: 450px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #111;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  color: white;
-}
-/*Prueba del comit*/
-
-.title {
-  text-align: center;
-  color: #000;
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.input-group {
-  margin-bottom: 15px;
-}
-
-.input-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.input-group input[type="text"],
-.input-group input[type="email"],
-.input-group input[type="password"],
-.input-group input[type="radio"] {
-  width: calc(100% - 20px);
-  padding: 10px;
-  margin: 5px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-  color: #333;
-}
-
-.role-section {
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
-.role-section label {
-  display: block;
-  margin-bottom: 10px;
-}
-
-.button-group {
-  display: flex;
-  justify-content: space-between;
-}
-
-.primary-button {
-  background-color: #000;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.secondary-button {
-  background-color: #ccc;
-  color: #333;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.success-message {
-  color: green;
-  text-align: center;
-  margin-top: 20px;
-}
-
-/* Media Queries para hacer el formulario responsivo */
-@media (max-width: 768px) {
-  .form-container {
-    max-width: 100%;
-    padding: 15px;
-  }
-
-  .title {
-    font-size: 20px;
-  }
-
-  .input-group input {
-    width: 100%;
-  }
-
-  .button-group {
-    flex-direction: column;
-  }
-
-  .primary-button,
-  .secondary-button {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-}
-</style>
-

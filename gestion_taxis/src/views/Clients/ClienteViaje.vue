@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="d-flex">
+  <div class="d-flex">
     <!-- Formulario para solicitar un viaje (lado izquierdo, más pequeño) -->
     <div id="formulario-viaje" class="form-container">
       <div v-if="!viaje || (viaje && viaje.estado !== 'en_progreso')">
@@ -40,6 +40,7 @@
           </div>
           <button type="submit" class="btn-submit">Solicitar Viaje</button>
         </form>
+        <div id="map" style="height: 400px; width: 100%; margin-top: 20px;"></div>
       </div>
 
       <!-- Detalles del viaje en progreso -->
@@ -52,8 +53,19 @@
           <p><strong>Destino:</strong> {{ viaje.destino }}</p>
           <p><strong>Tarifa:</strong> {{ viaje.tarifa }}</p>
           <p><strong>Estado:</strong> {{ viaje.estado }}</p>
+
+          <!-- Mostrar los datos del conductor -->
+          <div v-if="viaje.conductor">
+            <h3>Datos del Conductor</h3>
+            <p><strong>Nombre:</strong> {{ viaje.conductor.nombre }}</p>
+            <p><strong>Apellido:</strong> {{ viaje.conductor.apellido }}</p>
+            <p><strong>Cédula:</strong> {{ viaje.conductor.cedula }}</p>
+            <p><strong>Email:</strong> {{ viaje.conductor.email }}</p>
+            <p><strong>Teléfono:</strong> {{ viaje.conductor.telefono }}</p>
+          </div>
         </div>
 
+        <!-- Mostrar el mapa también en los detalles -->
         <div id="map" style="height: 400px; width: 100%; margin-top: 20px;"></div>
 
         <div v-if="viaje && viaje.estado === 'completado'">
@@ -85,136 +97,170 @@ export default {
       autocompleteDestino: null,
       interval: null,
       viaje: null, // Estado del viaje
-      directionsService: null, // Servicio para calcular rutas
+       directionsService: null, // Servicio para calcular rutas
       directionsRenderer: null, // Renderer para mostrar rutas
     };
   },
 
-  async created() {
-    const viajeId = localStorage.getItem("viaje_id");
-
-    if (viajeId) {
-      await this.cargarViaje(viajeId);
-
-      if (this.viaje && this.viaje.estado === "en_progreso") {
-        this.interval = setInterval(async () => {
-          await this.cargarViaje(viajeId);
-        }, 5000); // Verificar cada 5 segundos
-      }
-    }
-  },
-
-  beforeUnmount() {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
-  },
-
-  methods: {
-    async iniciarViaje() {
-      try {
-        const clienteId = localStorage.getItem("cliente_id");
-        const viajeData = {
-          origen: this.origen,
-          destino: this.destino,
-          tarifa: this.tarifa,
-          cliente: clienteId,
-        };
-        const response = await api.createViaje(viajeData);
-        alert(`Viaje iniciado con éxito. ID del viaje: ${response.data.id}`);
-        localStorage.setItem("viaje_id", response.data.id);
-        this.viaje = response.data;
-
-        this.interval = setInterval(async () => {
-          await this.cargarViaje(response.data.id);
-        }, 5000);
-      } catch (error) {
-        console.error("Error al iniciar el viaje:", error);
-        alert("Hubo un error al iniciar el viaje. Inténtalo nuevamente.");
+async created() {
+      const viajeId = localStorage.getItem("viaje_id");
+  
+      if (viajeId) {
+        await this.cargarViaje(viajeId);
+  
+        if (this.viaje && this.viaje.estado === "en_progreso") {
+          // Configura un temporizador para verificar el estado del viaje
+          this.interval = setInterval(async () => {
+            await this.cargarViaje(viajeId);
+          }, 5000); // Verificar cada 5 segundos
+          
+        }
       }
     },
-
-    async cargarViaje(viajeId) {
-      try {
-        const response = await api.getViaje(viajeId);
-        if (response.data) {
-          this.viaje = response.data;
-        }
-
-        if (this.viaje.estado === "completado") {
-          clearInterval(this.interval);
-          localStorage.removeItem("viaje_id");
-          this.viaje = null;
-          this.origen = "";
-          this.destino = "";
-          this.tarifa = 0;
-          this.initMap();
-        }
-      } catch (error) {
-        console.error("Error al cargar el viaje:", error);
-        this.viaje = null;
+     beforeUnmount() {
+      if (this.interval) {
         clearInterval(this.interval);
       }
     },
+  methods: {
+    async iniciarViaje() {
+      
+ try {
+          const clienteId = localStorage.getItem("cliente_id");
+          const viajeData = {
+            origen: this.origen,
+            destino: this.destino,
+            tarifa: this.tarifa,
+            cliente_id: clienteId,
+          };
+          
+console.log("Datos del viaje:", viajeData);
 
-    volverSolicitarViaje() {
-      clearInterval(this.interval);
-      localStorage.removeItem("viaje_id");
-      this.viaje = null;
-      this.origen = "";
-      this.destino = "";
-      this.tarifa = 0;
 
-      this.$nextTick(() => {
-        this.initMap();
-      });
+          const response = await api.createViaje(viajeData);
+         alert(`Viaje iniciado con éxito. ID del viaje: ",${response.data.id}`);
+          //alert("Viaje iniciado con éxito. ID del viaje: ",${response.data.id});
+          localStorage.setItem("viaje_id", response.data.id);
+          this.viaje = response.data; // Actualizar el viaje actual
+
+
+// Iniciar el temporizador
+        this.interval = setInterval(async () => {
+          await this.cargarViaje(response.data.id);
+        }, 5000);
+
+
+
+        } catch (error) {
+          console.error("Error al iniciar el viaje:", error);
+          alert("Hubo un error al iniciar el viaje. Inténtalo nuevamente.");
+        }
+    
     },
+     async cargarViaje(viajeId) {
+        try {
+          const response = await api.getViaje(viajeId);
+        if(response.data){
+        this.viaje = response.data;
 
+        /*
+
+        // Dibujar la ruta en el mapa si el viaje está en progreso o completado
+if (this.viaje.origen && this.viaje.destino) {
+            this.origen = this.viaje.origen;
+            this.destino = this.viaje.destino;
+            this.dibujarRuta();
+          }
+*/
+
+
+        if(this.viaje.estado === "completado"){
+        clearInterval(this.interval);
+        localStorage.removeItem("viaje_id");
+
+         // Reiniciar formulario y mapa
+            this.viaje = null;
+            this.origen = "";
+            this.destino = "";
+            this.tarifa = 0;
+        this.initMap();
+        }      
+        }else{ this.viaje = null;
+        }
+
+        } catch (error) {
+          console.error("Error al cargar el viaje:", error);
+          this.viaje=null;
+          clearInterval(this.interval);
+        }
+      },
+ volverSolicitarViaje() {
+    clearInterval(this.interval);
+    localStorage.removeItem("viaje_id");
+    this.viaje = null;
+    this.origen = "";
+    this.destino = "";
+    this.tarifa = 0;
+   
+    // Asegúrate de reiniciar correctamente el mapa
+    this.$nextTick(() => {
+      this.initMap(); // Reinicia el mapa después de que el DOM esté listo
+    });
+  },
     initMap() {
       const mapElement = document.getElementById("map");
-      const defaultLocation = { lat: 40.416775, lng: -3.703790 }; // Madrid
+      if (!mapElement) {
+        console.error("No se encontró el elemento del mapa en el DOM.");
+        return;
+      }
 
-      if (!this.map) {
-        this.map = new google.maps.Map(mapElement, {
-          center: defaultLocation,
-          zoom: 13,
-        });
+      const defaultLocation = { lat: -1.269500, lng: -78.626205 }; // Madrid
 
-        this.markerOrigen = new google.maps.Marker({
-          map: this.map,
-          position: defaultLocation,
-          title: "Ubicación de recogida",
-        });
+if (!this.map) {
+      this.map = new google.maps.Map(mapElement, {
+        center: defaultLocation,
+        zoom: 13,
+      });
 
-        this.markerDestino = new google.maps.Marker({
-          map: this.map,
-          position: defaultLocation,
-          title: "Ubicación de destino",
-        });
+      this.markerOrigen = new google.maps.Marker({
+        map: this.map,
+        position: defaultLocation,
+        title: "Ubicación de recogida",
+      });
 
-        this.directionsService = new google.maps.DirectionsService();
-        this.directionsRenderer = new google.maps.DirectionsRenderer();
-        this.directionsRenderer.setMap(this.map);
+      this.markerDestino = new google.maps.Marker({
+        map: this.map,
+        position: defaultLocation,
+        title: "Ubicación de destino",
+      });
 
-        this.$nextTick(() => {
-          if (this.$refs.origenInput && this.$refs.destinoInput) {
-            this.autocompleteOrigen = new google.maps.places.Autocomplete(
-              this.$refs.origenInput,
-              { types: ["geocode"] }
-            );
+// Inicializar el servicio y el renderer para las rutas
+      this.directionsService = new google.maps.DirectionsService();
+      this.directionsRenderer = new google.maps.DirectionsRenderer();
+      this.directionsRenderer.setMap(this.map);
 
-            this.autocompleteDestino = new google.maps.places.Autocomplete(
-              this.$refs.destinoInput,
-              { types: ["geocode"] }
-            );
+    // Inicializar Autocomplete solo si los refs están disponibles
+    this.$nextTick(() => {
+      if (this.$refs.origenInput && this.$refs.destinoInput) {
+        this.autocompleteOrigen = new google.maps.places.Autocomplete(
+          this.$refs.origenInput,
+          { types: ["geocode"] }
+        );
 
-            this.autocompleteOrigen.addListener("place_changed", this.onOrigenChanged);
-            this.autocompleteDestino.addListener("place_changed", this.onDestinoChanged);
-          }
-        });
+        this.autocompleteDestino = new google.maps.places.Autocomplete(
+          this.$refs.destinoInput,
+          { types: ["geocode"] }
+        );
+
+
+
+
+      this.autocompleteOrigen.addListener("place_changed", this.onOrigenChanged);
+      this.autocompleteDestino.addListener("place_changed", this.onDestinoChanged);
+      }
+      });
       }
     },
-
     onOrigenChanged() {
       const place = this.autocompleteOrigen.getPlace();
       if (place.geometry) {
@@ -223,14 +269,16 @@ export default {
         this.map.setCenter(place.geometry.location);
         this.map.setZoom(15);
 
+// Intentar dibujar la ruta si ya hay destino
         if (this.destino) {
           this.dibujarRuta();
         }
+
+
       } else {
         alert("Por favor, selecciona un lugar válido para la recogida.");
       }
     },
-
     onDestinoChanged() {
       const place = this.autocompleteDestino.getPlace();
       if (place.geometry) {
@@ -239,6 +287,7 @@ export default {
         this.map.setCenter(place.geometry.location);
         this.map.setZoom(15);
 
+// Intentar dibujar la ruta si ya hay origen
         if (this.origen) {
           this.dibujarRuta();
         }
@@ -248,7 +297,6 @@ export default {
         alert("Por favor, selecciona un lugar válido para el destino.");
       }
     },
-
     dibujarRuta() {
       if (!this.origen || !this.destino) {
         alert("Por favor, asegúrate de que tanto origen como destino estén seleccionados.");
@@ -269,7 +317,6 @@ export default {
         }
       });
     },
-
     calcularTarifa() {
       const service = new google.maps.DistanceMatrixService();
       service.getDistanceMatrix(
@@ -282,7 +329,9 @@ export default {
           if (status === "OK" && response.rows[0].elements[0].status === "OK") {
             const distanceInMeters = response.rows[0].elements[0].distance.value;
             const distanceInKm = distanceInMeters / 1000;
-            this.tarifa = (distanceInKm * 2).toFixed(2);
+
+            // Fórmula de tarifa personalizada
+            this.tarifa = (distanceInKm * 0.7).toFixed(2);
           } else {
             alert("No se pudo calcular la tarifa. Por favor, inténtelo nuevamente.");
           }
@@ -290,7 +339,6 @@ export default {
       );
     },
   },
-
   mounted() {
     this.$nextTick(() => {
       this.initMap();
