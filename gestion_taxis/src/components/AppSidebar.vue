@@ -1,77 +1,80 @@
 <template>
-  <div class="sidebar bg-light text-dark p-4 d-flex flex-column">
-    <!-- Header de la sidebar -->
-    <div class="sidebar-header d-flex flex-column align-items-start mb-4">
-      <h5 class="sidebar-title mt-1">Bienvenido</h5>
-      <h6 v-if="usuario" class="sidebar-title2 text-muted">
-        {{ usuario.nombre }} | {{ usuario.rol }}
-      </h6>
+  <div class="sidebar-container">
+    <!-- Barra lateral que se muestra siempre en pantallas grandes -->
+    <div :class="{'sidebar': true, 'sidebar-visible': isSidebarVisible}">
+      <div class="sidebar-header d-flex flex-column align-items-start mb-4">
+        <h5 class="sidebar-title mt-1">Bienvenido</h5>
+        <h6 v-if="usuario" class="sidebar-title2 text-muted">
+          {{ usuario.nombre }} | {{ usuario.rol }}
+        </h6>
+      </div>
+
+      <!-- Sección de enlaces -->
+      <ul class="nav flex-column">
+        <!-- Pantallas del Admin -->
+        <div v-if="usuario && usuario.rol == 'Admin'" class="mb-4">
+          <h6 class="nav-section-title">Administración</h6>
+          <li class="nav-item">
+            <router-link to="/AdminRegistro" class="nav-link">
+              <i class="fas fa-user-plus"></i> Registro
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/AdminPerfil" class="nav-link">
+              <i class="fas fa-user-cog"></i> Perfil
+            </router-link>
+          </li>
+        </div>
+
+        <!-- Pantallas del Cliente -->
+        <div v-if="usuario && usuario.rol == 'Cliente'" class="mb-4">
+          <h6 class="nav-section-title">Cliente</h6>
+          <li class="nav-item">
+            <router-link to="/ClienteViaje" class="nav-link">
+              <i class="fas fa-car"></i> Viaje
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/ClienteHistorial" class="nav-link">
+              <i class="fas fa-history"></i> Historial de Viajes
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/ClientePerfil" class="nav-link">
+              <i class="fas fa-user"></i> Perfil
+            </router-link>
+          </li>
+        </div>
+
+        <!-- Pantallas del Conductor -->
+        <div v-if="usuario && usuario.rol == 'Conductor'" class="mb-4">
+          <h6 class="nav-section-title">Conductor</h6>
+          <li class="nav-item">
+            <router-link to="/ConductorViaje" class="nav-link">
+              <i class="fas fa-road"></i> Viaje
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/ConductorHistorial" class="nav-link">
+              <i class="fas fa-history"></i> Historial de Viajes
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/ConductorPerfil" class="nav-link">
+              <i class="fas fa-user"></i> Perfil
+            </router-link>
+          </li>
+        </div>
+      </ul>
+
+      <!-- Cerrar sesión (visible solo en pantallas grandes) -->
+      <div class="mt-auto">
+        <button v-if="isDesktop" @click="logout" class="btn btn-dark w-100 mt-4">Cerrar Sesión</button>
+      </div>
     </div>
 
-    <!-- Sección de enlaces -->
-    <ul class="nav flex-column">
-
-      <!-- Pantallas del Admin -->
-      <div v-if="usuario && usuario.rol == 'Admin'" class="mb-4">
-        <h6 class="nav-section-title">Administración</h6>
-        <li class="nav-item">
-          <router-link to="/AdminRegistro" class="nav-link">
-            <i class="fas fa-user-plus"></i> Registro
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/AdminPerfil" class="nav-link">
-            <i class="fas fa-user-cog"></i> Perfil
-          </router-link>
-        </li>
-      </div>
-
-      <!-- Pantallas del Cliente -->
-      <div v-if="usuario && usuario.rol == 'Cliente'" class="mb-4">
-        <h6 class="nav-section-title">Cliente</h6>
-        <li class="nav-item">
-          <router-link to="/ClienteViaje" class="nav-link">
-            <i class="fas fa-car"></i> Viaje
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/ClienteHistorial" class="nav-link">
-            <i class="fas fa-history"></i> Historial de Viajes
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/ClientePerfil" class="nav-link">
-            <i class="fas fa-user"></i> Perfil
-          </router-link>
-        </li>
-      </div>
-
-      <!-- Pantallas del Conductor -->
-      <div v-if="usuario && usuario.rol == 'Conductor'" class="mb-4">
-        <h6 class="nav-section-title">Conductor</h6>
-        <li class="nav-item">
-          <router-link to="/ConductorViaje" class="nav-link">
-            <i class="fas fa-road"></i> Viaje
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/ConductorHistorial" class="nav-link">
-            <i class="fas fa-history"></i> Historial de Viajes
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/ConductorPerfil" class="nav-link">
-            <i class="fas fa-user"></i> Perfil
-          </router-link>
-        </li>
-      </div>
-
-    </ul>
-
-    <!-- Cerrar sesión -->
-    <div class="mt-auto">
-      <button @click="logout" class="btn btn-dark w-100 mt-4">Cerrar Sesión</button>
-    </div>
+    <!-- Botón para abrir la barra lateral solo en pantallas pequeñas -->
+    <button v-if="!isDesktop" @click="toggleSidebar" class="btn btn-dark d-block d-md-none w-100 mt-4">Menú</button>
   </div>
 </template>
 
@@ -80,11 +83,15 @@ export default {
   data() {
     return {
       usuario: "",
+      isDesktop: false,
+      isSidebarVisible: false // Controlar la visibilidad de la barra lateral solo en móviles
     };
   },
 
   mounted() {
     this.cargarPerfil();
+    this.checkScreenSize(); // Llama a este método al montar el componente
+    window.addEventListener('resize', this.checkScreenSize); // Asegura que el cambio de tamaño se maneje correctamente
   },
 
   methods: {
@@ -93,6 +100,17 @@ export default {
       if (storedUser) {
         this.usuario = JSON.parse(storedUser); // Convertir de JSON a objeto
       }
+    },
+
+    checkScreenSize() {
+      this.isDesktop = window.innerWidth > 768; // 768px es el límite para móvil
+      if (this.isDesktop) {
+        this.isSidebarVisible = true; // Asegura que la barra lateral esté visible en pantallas grandes
+      }
+    },
+
+    toggleSidebar() {
+      this.isSidebarVisible = !this.isSidebarVisible; // Alternar la visibilidad en pantallas pequeñas
     },
 
     logout() {
@@ -109,13 +127,14 @@ export default {
 </script>
 
 <style scoped>
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Barra lateral que solo se muestra en dispositivos de escritorio */
 .sidebar {
-  height: 100vh;
-  width: 250px;
-  border-right: 1px solid #eaeaea;
-  background-color: #f9f9f9;
-  font-family: 'Roboto', sans-serif;
-  transition: transform 0.3s ease;
+  display: block;
 }
 
 .sidebar-header {
@@ -181,21 +200,29 @@ export default {
   margin-top: auto;
 }
 
-@media (max-width: 768px) {
+/* Barra lateral visible solo en pantallas grandes */
+@media (min-width: 769px) {
   .sidebar {
-    width: 220px;
+    display: block; /* Barra lateral visible siempre en pantallas grandes */
+  }
+
+  .btn {
+    display: none; /* No mostrar el botón de menú en pantallas grandes */
   }
 }
 
 @media (max-width: 768px) {
+  /* En pantallas pequeñas, la barra lateral se muestra solo cuando se hace clic */
   .sidebar {
-    transform: translateX(-100%);
-    position: absolute;
-    z-index: 1000;
+    display: none; /* Oculta la barra lateral por defecto en móviles */
   }
 
-  .sidebar.show {
-    transform: translateX(0);
+  .sidebar-visible {
+    display: block; /* Muestra la barra lateral cuando isSidebarVisible es verdadero */
+  }
+
+  .btn {
+    display: block; /* Mostrar el botón de menú en pantallas pequeñas */
   }
 }
 </style>

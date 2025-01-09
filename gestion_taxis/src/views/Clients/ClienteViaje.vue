@@ -304,29 +304,31 @@ export default {
   display: flex;
   justify-content: space-between;
   height: 100vh;
+  flex-wrap: wrap; /* Permite que los elementos se ajusten cuando la pantalla sea más pequeña */
 }
 
 .form-container {
-  width: 25%; /* Mantén el ancho del formulario pequeño */
+  width: 100%; /* Por defecto, ocupa todo el ancho en pantallas pequeñas */
+  max-width: 400px; /* Ancho máximo para pantallas grandes */
   background-color: #f7f7f7;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Centra el formulario verticalmente */
+  justify-content: center; 
   align-items: center;
-  height: 60%; /* Ajusta la altura del contenedor del formulario según sea necesario */
-  padding: 20px; /* Agrega un poco de padding para que no esté pegado a los bordes */
+  height: 60%; 
+  padding: 20px;
+  margin-bottom: 20px; /* Agrega un pequeño margen inferior para mejorar la apariencia en pantallas pequeñas */
 }
 
 .formulario {
   width: 90%; 
-  height: auto; 
 }
 
 .map-container {
-  width: 72%; 
-  height: 100%; 
+  width: 100%;
+  height: 400px; /* Define una altura fija para el mapa */
 }
 
 .title {
@@ -350,12 +352,12 @@ export default {
 }
 
 label {
-  color: #000; /* Cambiar color de los labels a negro */
+  color: #000;
   font-weight: bold;
 }
 
 .btn-submit {
-  background-color:  #000;
+  background-color: #000;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -364,6 +366,23 @@ label {
 }
 
 .btn-submit:hover {
-  background-color: #000;
+  background-color: #333;
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+  #app {
+    flex-wrap: nowrap; /* En pantallas grandes, los elementos permanecen en una sola fila */
+  }
+
+  .form-container {
+    width: 25%; /* Formulario más pequeño en pantallas grandes */
+    margin-bottom: 0; /* Elimina el margen inferior en pantallas grandes */
+  }
+
+  .map-container {
+    width: 72%; /* Mapa más grande en pantallas grandes */
+    height: 100%; /* El mapa ocupa todo el alto disponible en pantallas grandes */
+  }
 }
 </style>
