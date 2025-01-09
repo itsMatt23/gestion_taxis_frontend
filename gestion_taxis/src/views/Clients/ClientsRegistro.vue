@@ -2,15 +2,15 @@
   <div class="iniciar-viaje">
     <h1>Iniciar un Viaje</h1>
     <form @submit.prevent="iniciarViaje">
-      <div>
+      <div class="input-container">
         <label for="origen">Ubicación de recogida</label>
         <input v-model="origen" id="origen" type="text" placeholder="Escribe la ubicación de recogida" required />
       </div>
-      <div>
+      <div class="input-container">
         <label for="destino">Ubicación de destino</label>
         <input v-model="destino" id="destino" type="text" placeholder="Escribe la ubicación de destino" required />
       </div>
-      <div>
+      <div class="input-container">
         <label for="tarifa">Tarifa</label>
         <input v-model="tarifa" id="tarifa" type="number" placeholder="Tarifa del viaje" required />
       </div>
@@ -62,10 +62,68 @@ export default {
 </script>
 
 <style scoped>
+/* Estilo global: */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f7f7f7;
+  margin: 0;
+  padding: 0;
+}
+
+/* Contenedor principal: */
 .iniciar-viaje {
-  background: white;
-  padding: 20px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 50px auto;
+}
+
+/* Estilo del encabezado: */
+h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Estilo de los inputs: */
+.input-container {
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+  margin-top: 5px;
+}
+
+input:focus {
+  border-color: #00a8cc; /* Color azul similar al de Uber */
+  background-color: #fff;
+}
+
+/* Estilo del botón: */
+button {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #444;
 }
 </style>
