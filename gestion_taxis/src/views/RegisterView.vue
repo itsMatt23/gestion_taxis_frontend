@@ -203,6 +203,7 @@ export default {
   font-family: 'Helvetica Neue', Arial, sans-serif;
   color: white;
 }
+/*Prueba del comit*/
 
 .title {
   text-align: center;
