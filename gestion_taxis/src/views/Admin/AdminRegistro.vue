@@ -1,5 +1,148 @@
 <template>
-    <h1>Hola Admin</h1>
+  <div>
+    <h1>Panel de Administración</h1>
+
+    <!-- Tabla de Viajes en Progreso -->
+    <div class="table-section">
+      <h2>Viajes en Progreso</h2>
+      <input
+        v-model="filtroProgreso"
+        @input="filtrarViajesProgreso"
+        placeholder="Buscar en viajes en progreso..."
+        class="filtro-input"
+      />
+      <table v-if="viajesEnProgresoFiltrados.length" class="table">
+        <thead>
+          <tr>
+            <th>Origen</th>
+            <th>Destino</th>
+            <th>Tarifa</th>
+            <th>Cédula Cliente</th>
+            <th>Cédula Conductor</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="viaje in viajesEnProgresoFiltrados" :key="viaje.id">
+            <td>{{ viaje.origen }}</td>
+            <td>{{ viaje.destino }}</td>
+            <td>${{ viaje.tarifa }}</td>
+            <td>
+              {{ viaje.cliente.cedula }}
+              <button @click="verDatos(viaje.cliente, 'Cliente')">Ver Detalles</button>
+            </td>
+            <td>
+              {{ viaje.conductor ? viaje.conductor.cedula : "N/A" }}
+              <button
+                v-if="viaje.conductor"
+                @click="verDatos(viaje.conductor, 'Conductor')"
+              >
+                Ver Detalles
+              </button>
+            </td>
+            <td>{{ viaje.estado }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p v-else>No hay viajes en progreso.</p>
+    </div>
+
+    <!-- Tabla de Viajes Terminados -->
+    <div class="table-section">
+      <h2>Viajes Terminados</h2>
+      <input
+        v-model="filtroTerminados"
+        @input="filtrarViajesTerminados"
+        placeholder="Buscar en viajes terminados..."
+        class="filtro-input"
+      />
+      <table v-if="viajesTerminadosFiltrados.length" class="table">
+        <thead>
+          <tr>
+            <th>Origen</th>
+            <th>Destino</th>
+            <th>Tarifa</th>
+            <th>Cédula Cliente</th>
+            <th>Cédula Conductor</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="viaje in viajesTerminadosFiltrados" :key="viaje.id">
+            <td>{{ viaje.origen }}</td>
+            <td>{{ viaje.destino }}</td>
+            <td>${{ viaje.tarifa }}</td>
+            <td>
+              {{ viaje.cliente.cedula }}
+              <button @click="verDatos(viaje.cliente, 'Cliente')">Ver Detalles</button>
+            </td>
+            <td>
+              {{ viaje.conductor ? viaje.conductor.cedula : "N/A" }}
+              <button
+                v-if="viaje.conductor"
+                @click="verDatos(viaje.conductor, 'Conductor')"
+              >
+                Ver Detalles
+              </button>
+            </td>
+            <td>{{ viaje.estado }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p v-else>No hay viajes terminados.</p>
+    </div>
+
+    <!-- Tabla de Conductores Disponibles -->
+    <div class="table-section">
+      <h2>Conductores Disponibles</h2>
+      <input
+        v-model="filtroConductores"
+        @input="filtrarConductores"
+        placeholder="Buscar conductores disponibles..."
+        class="filtro-input"
+      />
+      <table v-if="conductoresFiltrados.length" class="table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Cédula</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Vehículo</th>
+            <th>Placa</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="conductor in conductoresFiltrados" :key="conductor.id">
+            <td>{{ conductor.nombre }}</td>
+            <td>{{ conductor.apellido }}</td>
+            <td>{{ conductor.cedula }}</td>
+            <td>{{ conductor.email }}</td>
+            <td>{{ conductor.telefono }}</td>
+            <td>{{ conductor.marca_vehiculo || "N/A" }}</td>
+            <td>{{ conductor.placa || "N/A" }}</td>
+            <td>{{ conductor.estado }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p v-else>No hay conductores disponibles.</p>
+    </div>
+
+    <!-- Popup -->
+    <div v-if="mostrarPopup" class="popup-overlay">
+      <div class="popup-content">
+        <h3>Datos del {{ tipoDetalle }}</h3>
+        <p><strong>Nombre:</strong> {{ datosDetalle.nombre }}</p>
+        <p><strong>Apellido:</strong> {{ datosDetalle.apellido }}</p>
+        <p><strong>Cédula:</strong> {{ datosDetalle.cedula }}</p>
+        <p><strong>Email:</strong> {{ datosDetalle.email }}</p>
+        <p><strong>Teléfono:</strong> {{ datosDetalle.telefono }}</p>
+        <button @click="cerrarPopup">Cerrar</button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
