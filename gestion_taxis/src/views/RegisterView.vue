@@ -192,7 +192,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .form-container {
   max-width: 450px;
   margin: 0 auto;
@@ -206,7 +206,7 @@ export default {
 
 .title {
   text-align: center;
-  color: #000; /* Título en color negro */
+  color: #000;
   margin-bottom: 20px;
   font-size: 24px;
   font-weight: bold;
@@ -273,4 +273,31 @@ export default {
   text-align: center;
   margin-top: 20px;
 }
+
+/* Media Queries para hacer el formulario responsivo */
+@media (max-width: 768px) {
+  .form-container {
+    max-width: 100%;
+    padding: 15px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .input-group input {
+    width: 100%;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .primary-button,
+  .secondary-button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
 </style>
+
