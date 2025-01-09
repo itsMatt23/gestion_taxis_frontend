@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar-container">
-    <!-- Barra lateral que se muestra siempre en pantallas grandes -->
-    <div :class="{'sidebar': true, 'sidebar-visible': isSidebarVisible}">
+    <!-- Barra lateral que se muestra siempre en pantallas grandes y se puede togglear en pequeñas -->
+    <div :class="{'sidebar': true, 'sidebar-visible': isSidebarVisible, 'd-md-block': isDesktop, 'd-none': !isSidebarVisible && !isDesktop}">
       <div class="sidebar-header d-flex flex-column align-items-start mb-4">
         <h5 class="sidebar-title mt-1">Bienvenido</h5>
         <h6 v-if="usuario" class="sidebar-title2 text-muted">
@@ -15,7 +15,7 @@
         <div v-if="usuario && usuario.rol == 'Admin'" class="mb-4">
           <li class="nav-item">
             <router-link to="/AdminRegistro" class="nav-link">
-              <i class="fas fa-user-plus"></i> Registro
+              <i class="fas fa-user-plus"></i> Registro de viajes
             </router-link>
           </li>
           <li class="nav-item">
@@ -64,18 +64,29 @@
         </div>
       </ul>
 
-      <!-- Cerrar sesión (visible solo en pantallas grandes) -->
+      <!-- Cerrar sesión -->
+      <div class="d-flex flex-column" style="height: 55vh;">
       <div class="mt-auto">
-        <button v-if="isDesktop" @click="logout" class="btn btn-dark w-100 mt-4">Cerrar Sesión</button>
+        <button @click="logout" class="btn btn-dark w-100 mt-3">Cerrar Sesión</button>
       </div>
     </div>
+    </div>
 
-    <!-- Botón para abrir la barra lateral solo en pantallas pequeñas -->
-    <button v-if="!isDesktop" @click="toggleSidebar" class="btn btn-dark d-block d-md-none w-100 mt-4">
-      <i class="fas fa-bars"></i> <!-- Icono de menú -->
+    <nav class="navbar navbar-dark d-md-none" style="background-color: #000;" ref="navbar">
+  <div class="container-fluid d-flex justify-content-center align-items-center">
+    <!-- Botón para abrir la barra lateral -->
+    <button @click="toggleSidebar" class="btn btn-dark ms-1">
+      <i class="fas fa-bars"></i>
     </button>
+    <!-- Nombre de Uber centrado -->
+    <span class="navbar-brand">Uber</span>
+  </div>
+</nav>
+
+    
   </div>
 </template>
+
 
 <script>
 export default {
@@ -91,6 +102,12 @@ export default {
     this.cargarPerfil();
     this.checkScreenSize(); // Llama a este método al montar el componente
     window.addEventListener('resize', this.checkScreenSize); // Asegura que el cambio de tamaño se maneje correctamente
+    document.addEventListener('click', this.handleClickOutside);
+  },
+
+  // Cambia `beforeDestroy` a `beforeUnmount`
+  beforeUnmount() {
+    window.removeEventListener('resize', this.checkScreenSize);
   },
 
   methods: {
@@ -105,11 +122,22 @@ export default {
       this.isDesktop = window.innerWidth > 768; // 768px es el límite para móvil
       if (this.isDesktop) {
         this.isSidebarVisible = true; // Asegura que la barra lateral esté visible en pantallas grandes
+      } else {
+        this.isSidebarVisible = false; // Oculta la barra lateral en pantallas pequeñas por defecto
       }
     },
 
     toggleSidebar() {
+      event.stopPropagation();
       this.isSidebarVisible = !this.isSidebarVisible; // Alternar la visibilidad en pantallas pequeñas
+    },
+
+    handleClickOutside(event) {
+      // Verificar si el clic fue fuera del AppBar
+      const navbar = this.$refs.navbar;
+      if (navbar && !navbar.contains(event.target)) {
+        this.isSidebarVisible = false; // Cerrar el sidebar si se hace clic fuera
+      }
     },
 
     logout() {
@@ -131,9 +159,16 @@ export default {
   flex-direction: column;
 }
 
-/* Barra lateral que solo se muestra en dispositivos de escritorio */
 .sidebar {
-  display: block;
+  background-color: #F9F9F9; /* Fondo de la barra lateral */
+  padding: 20px;
+  height: 100vh; /* Asegura que la barra lateral ocupe toda la altura de la pantalla */
+  overflow-y: auto; /* Agrega scroll si es necesario */
+  position: fixed; /* Fija la barra lateral */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Asegura que esté por encima de otros elementos */
+  transition: all 0.3s ease; /* Transición suave al mostrar/ocultar */
 }
 
 .sidebar-header {
@@ -142,13 +177,13 @@ export default {
 
 .sidebar-title {
   font-size: 1.3rem;
-  color: #333;
+  color: #212529; /* Color del texto del título */
   font-weight: 500;
 }
 
 .sidebar-title2 {
   font-size: 1.0rem;
-  color: #666;
+  color: #6c757d; /* Color del texto secundario */
 }
 
 .nav-section-title {
@@ -163,7 +198,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #333;
+  color: #212529; /* Color del texto de los enlaces */
   font-size: 1rem;
   border-radius: 6px;
   transition: background-color 0.2s ease;
@@ -171,7 +206,7 @@ export default {
 
 .nav-link:hover {
   background-color: #f1f1f1;
-  color: #007bff;
+  color: #000;
 }
 
 .nav-item .nav-link i {
@@ -179,7 +214,6 @@ export default {
 }
 
 .nav-link.active {
-  background-color: #007bff;
   color: white;
 }
 
@@ -187,45 +221,28 @@ export default {
   font-size: 1.1rem;
   padding: 12px;
   border-radius: 6px;
-  background-color: #333;
+  background-color: #000; /* Color del botón */
   color: white;
+  border: none;
 }
 
 .btn:hover {
-  background-color: #555;
+  background-color: #333; /* Color al pasar el ratón sobre el botón */
 }
 
 .mt-auto {
   margin-top: auto;
 }
 
-/* Barra lateral visible solo en pantallas grandes */
-@media (min-width: 769px) {
-  .sidebar {
-    display: block; /* Barra lateral visible siempre en pantallas grandes */
-  }
-
-  .btn {
-    display: block; /* Mostrar el botón solo en pantallas grandes */
-  }
-
-  .btn.d-block {
-    display: none; /* El botón de menú se oculta en pantallas grandes */
-  }
-}
-
+/* Ajustes para pantallas pequeñas */
 @media (max-width: 768px) {
-  /* En pantallas pequeñas, la barra lateral se muestra solo cuando se hace clic */
   .sidebar {
-    display: none; /* Oculta la barra lateral por defecto en móviles */
+    width: 250px; /* Ancho de la barra lateral en móviles */
+    transform: translateX(-100%);
   }
 
   .sidebar-visible {
-    display: block; /* Muestra la barra lateral cuando isSidebarVisible es verdadero */
-  }
-
-  .btn {
-    display: none; /* Ocultar el botón de "Cerrar sesión" en pantallas pequeñas */
+    transform: translateX(0);
   }
 }
 </style>
