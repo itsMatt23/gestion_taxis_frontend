@@ -1,6 +1,6 @@
 <template>
     <div class="profile-container">
-        <h2 class="text-center mb-4">Mi Perfil</h2>
+        <h2 class="text-center mb-3">Mi Perfil</h2>
 
         <div class="profile-icon">
             <img :src="require('@/assets/perfil.jpg')" alt="Ícono de perfil" />
@@ -8,33 +8,38 @@
 
         <form @submit.prevent="actualizarUsuario" class="profile-form">
             <div class="form-group">
-                <label for="cedula">Cédula:</label>
-                <input type="text" id="cedula" v-model="perfil.cedula" placeholder="Ingrese la cédula del usuario" required disabled />
+                <label for="cedula">Cedula:</label>
+                <input type="text" id="text" v-model="perfil.cedula" placeholder="Ingrese la cedula del usaurio"
+                    required disabled />
             </div>
 
             <div class="form-group">
                 <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" v-model="perfil.nombre" placeholder="Ingrese el nombre del usuario" required />
+                <input type="text" id="nombre" v-model="perfil.nombre" placeholder="Ingrese el nombre del usuario"
+                    required />
             </div>
             
             <div class="form-group">
                 <label for="apellido">Apellido:</label>
-                <input type="text" id="apellido" v-model="perfil.apellido" placeholder="Ingrese el apellido del usuario" required />
+                <input type="text" id="apellido" v-model="perfil.apellido" placeholder="Ingrese el apellido del usuario"
+                    required />
             </div>
 
             <div class="form-group">
-                <label for="telefono">Teléfono:</label>
-                <input type="text" id="telefono" v-model="perfil.telefono" placeholder="Ingrese el teléfono del usuario" required />
+                <label for="telefono">Telefono:</label>
+                <input type="text" id="text" v-model="perfil.telefono"
+                    placeholder="Ingrese el correo electrónico" required disabled />
             </div>
 
             <div class="form-group">
                 <label for="email">Correo Electrónico:</label>
-                <input disabled type="email" id="email" v-model="perfil.email" placeholder="Ingrese el correo electrónico" required />
+                <input disabled type="email" id="email" v-model="perfil.email"
+                    placeholder="Ingrese el correo electrónico" required />
             </div>
 
             <div class="form-group">
-                <label for="group">Rol:</label>
-                <select disabled id="group" v-model="perfil.rol" required>
+                <label for="group" class="form-label">Rol:</label>
+                <select disabled id="group" class="form-select" v-model="perfil.rol" required>
                     <option disabled value="">Seleccione el rol del usuario</option>
                     <option disabled value="Admin">Administrador</option>
                     <option disabled value="Cliente">Cliente</option>
@@ -44,22 +49,56 @@
 
             <div class="form-group">
                 <label for="password">Nueva Contraseña:</label>
-                <input type="password" id="password" v-model="perfil.password" placeholder="Ingrese la nueva contraseña (opcional)" />
+                <input type="password" id="password" v-model="perfil.password"
+                    placeholder="Ingrese la nueva contraseña (opcional)" maxlength="10" />
             </div>
+            <small v-if="perfil.password" class="form-text text-muted">
+                    La contraseña debe tener:
+                    <ul>
+                        <li
+                            v-bind:class="{ 'text-success': passwordValidations.length, 'text-danger': !passwordValidations.length }">
+                            Entre 4 y 10 caracteres.</li>
+                        <li v-bind:class="{
+                            'text-success': passwordValidations.number,
+                            'text-danger': !passwordValidations.number,
+                        }">
+                            Un número.
+                        </li>
+                        <li v-bind:class="{
+                            'text-success': passwordValidations.uppercase,
+                            'text-danger': !passwordValidations.uppercase,
+                        }">
+                            Una letra mayúscula.
+                        </li>
+                        <li v-bind:class="{
+                            'text-success': passwordValidations.special,
+                            'text-danger': !passwordValidations.special,
+                        }">
+                            Un carácter especial.
+                        </li>
+                    </ul>
+                </small>
 
             <div v-if="perfil && perfil.rol == 'Conductor'">
                 <div class="form-group">
-                    <label for="marca_vehiculo">Marca del Vehículo:</label>
-                    <input type="text" id="marca_vehiculo" v-model="perfil.marca_vehiculo" placeholder="Ingrese la marca del vehículo" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="placa">Placa del Vehículo:</label>
-                    <input type="text" id="placa" v-model="perfil.placa" placeholder="Ingrese la placa del vehículo" maxlength="6" required />
-                </div>
+                <label for="marca_vehiculo">Marca Vehiculo:</label>
+                <input type="text" id="marca_vehiculo" v-model="perfil.marca_vehiculo"
+                    placeholder="Ingrese el modelo del vehiculo" required />
             </div>
 
-            <button type="submit" class="btn-update">Actualizar</button>
+            <div class="form-group">
+                <label for="placa">Placa del vehiculo:</label>
+                <input type="text" id="placa" v-model="perfil.placa"
+                    placeholder="Ingrese la placa del vehiculo"
+                    maxlength="6"
+                    required/>
+            </div>
+        </div>
+
+
+
+            
+            <button type="submit" class="btn btn-dark w-100 mt-2">Actualizar</button>
         </form>
     </div>
 </template>
@@ -73,6 +112,17 @@ export default {
             perfil: "",
         };
     },
+    computed:{
+    passwordValidations() {
+      return {
+        length: this.perfil.password.length >= 4 && this.perfil.password.length <= 10,
+        number: /\d/.test(this.perfil.password),
+        uppercase: /[A-Z]/.test(this.perfil.password),
+        special: /[!@#$%^&*(),.?":{}|<>]/.test(this.perfil.password),
+      };
+    },
+  },
+
     methods: {
         async cargarPerfil() {
             const storedUser = localStorage.getItem('userConected');
@@ -89,6 +139,11 @@ export default {
 
                 if (!usuarioActualizado.password) {
                     delete usuarioActualizado.password; // Elimina el campo si está vacío o nulo
+                }
+
+                if (!this.passwordValidations.length || !this.passwordValidations.number || !this.passwordValidations.uppercase || !this.passwordValidations.special) {
+                    alert("La contraseña no cumple con los requisitos.");
+                    return;
                 }
 
                 const response = await apiService.updateUser(usuarioActualizado.id, usuarioActualizado);
