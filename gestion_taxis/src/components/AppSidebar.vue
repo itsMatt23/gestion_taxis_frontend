@@ -74,7 +74,9 @@
     </div>
 
     <!-- Botón para abrir la barra lateral solo en pantallas pequeñas -->
-    <button v-if="!isDesktop" @click="toggleSidebar" class="btn btn-dark d-block d-md-none w-100 mt-4">Menú</button>
+    <button v-if="!isDesktop" @click="toggleSidebar" class="btn btn-dark d-block d-md-none w-100 mt-4">
+      <i class="fas fa-bars"></i> <!-- Icono de menú -->
+    </button>
   </div>
 </template>
 
@@ -207,7 +209,11 @@ export default {
   }
 
   .btn {
-    display: none; /* No mostrar el botón de menú en pantallas grandes */
+    display: block; /* Mostrar el botón solo en pantallas grandes */
+  }
+
+  .btn.d-block {
+    display: none; /* El botón de menú se oculta en pantallas grandes */
   }
 }
 
@@ -222,7 +228,7 @@ export default {
   }
 
   .btn {
-    display: block; /* Mostrar el botón de menú en pantallas pequeñas */
+    display: none; /* Ocultar el botón de "Cerrar sesión" en pantallas pequeñas */
   }
 }
 </style>
