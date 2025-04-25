@@ -19,5 +19,4 @@ python -m venv nombre_entorno
 nombre_entorno\Scripts\activate
 
 
-
 pip freeze > requirements.txt
